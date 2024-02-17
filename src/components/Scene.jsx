@@ -5,7 +5,7 @@ import Model from "./Model";
 import { Environment } from "./Environment";
 
 const Scene = () => (
-  <Canvas shadows camera={{ fov: 20 }}>
+  <Canvas shadows camera={{ fov: 30, position: [-2, 2, 5] }}>
     <color attach="background" args={[0xA1ADBE]} />
 
     <group position={[0, 0, 0]}>
@@ -14,7 +14,7 @@ const Scene = () => (
       </Suspense>
     </group>
     <Environment />
-    <OrbitControls target={[0, 2, 0]} />
+    <OrbitControls target={[0, 1, 0]} />
   </Canvas>
 );
 

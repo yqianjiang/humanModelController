@@ -19,12 +19,12 @@ export const useAction = ({ nodes }) => {
    */
   function _rotateJoint(joint, angles) {
     const direction = joint.getWorldDirection(new Vector3());
-    const quaternion = joint.getWorldQuaternion(new Quaternion());
+    const worldQuaternion = joint.getWorldQuaternion(new Quaternion());
     console.log({
       name: joint.name,
       direction,
     })
-    const targetQuaternion = computeLocalQuaternion(quaternion, angles);
+    const targetQuaternion = computeLocalQuaternion(worldQuaternion, joint.quaternion, angles);
 
     // 加入等待更新
     targetQuaternions.current[joint.name] = targetQuaternion;

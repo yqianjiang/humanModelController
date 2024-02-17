@@ -16,29 +16,36 @@ export default function Model(props) {
 
   // const { ref } = useAnimations(animations);
   const { rotateJoint } = useAction({ nodes });
-  useEffect(() => {
-    // 抬头 45 度
-    rotateJoint("Head", { direction: "up", angle: 45 });
 
-    // 右手手臂整个放下（朝右，相比初始状态旋转80度左右）
-    rotateJoint("RightArm", { direction: "right", angle: 80 });
+  const handleBoxClick = () => {
+    // 低头 45 度
+    // rotateJoint("Neck", { axis: 'x', angle: 45 });
+    // 头部向左侧 45 度
+    // rotateJoint("Neck", { axis: 'z', angle: 45 });
+    // 头部向左看 45 度
+    rotateJoint("Neck", { axis: '-y', angle: 45 });
+  
+    // 右手手臂整个放下（相比初始状态旋转80度左右）
+    rotateJoint("RightArm", { axis: "z", angle: 80 });
+  
+    // 左手向前 90 度
+    // rotateJoint("LeftArm", { axis: "-y", angle: 90 });
 
-    // 左手向前
-    rotateJoint("LeftArm", { direction: "forward", angle: 90 });
-
-    // 左手小臂抬起 90 度【手的方向还是不太符合预期...还要再做另外一个转换？】
-    rotateJoint("LeftForeArm", { direction: "right", angle: 90 });
-
-    // 左手手掌向下 90 度【手的方向还是不太符合预期...还要再做另外一个转换？】
-    rotateJoint("LeftHand", { direction: "left", angle: 90 });
-
-    // 抬起右腿
-    rotateJoint("RightUpLeg", { direction: "up", angle: 90 });
-    rotateJoint("RightLeg", { direction: "down", angle: 90 });
-
-    // 左腿往后踢
-    // rotateJoint("LeftLeg", { direction: "down", angle: 90 });
-  }, []);
+    // 左手肘向上 90 度（会受到左手向前 90 度的影响）
+    rotateJoint("LeftForeArm", { axis: "z", angle: 90 });
+  
+    // 左手手掌向下 90 度（会受到左手肘向上 90 度的影响）
+    // rotateJoint("LeftHand", { axis: "-z", angle: 90 });
+  
+    // 右大腿往前
+    // rotateJoint("RightUpLeg", { axis: "-x", angle: 90 });
+    
+    // 放下右小腿
+    rotateJoint("RightLeg", { axis: "x", angle: 90 });
+    
+    // 左小腿往后
+    // rotateJoint("LeftLeg", { axis: "x", angle: 90 });
+  }
 
   // useFrame(() => {
   //   // 设置眼睛 Mesh 的位置
@@ -98,7 +105,10 @@ export default function Model(props) {
           />
       </skinnedMesh> */}
       </group>
-
+      <mesh onClick={handleBoxClick} position={[0.5,2,0]}>
+        <boxGeometry args={[0.1, 0.1, 0.01]}/>
+        <meshStandardMaterial /> 
+      </mesh>
       {/* <skinnedMesh receiveShadow scale={[0.1,0.1,3]} ref={leftEyeMeshRef} >
         <boxGeometry args={[0.2, 0.2, 0.2]} />
         <meshPhysicalMaterial

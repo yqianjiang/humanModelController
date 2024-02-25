@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from "react";
 import { useGLTF } from "@react-three/drei";
 import { useAction } from "../hooks/useAction";
-import { Vector3, Quaternion } from "three";
+import { Vector3, Quaternion, Uint16BufferAttribute, Float32BufferAttribute } from "three";
 import { useFrame } from "@react-three/fiber";
 
 export default function Model(props) {
@@ -17,13 +17,13 @@ export default function Model(props) {
   // const { ref } = useAnimations(animations);
   const { rotateJoint } = useAction({ nodes });
 
-  const handleBoxClick = () => {
+  const handleClick = () => {
     // 低头 45 度
     // rotateJoint("Neck", { axis: 'x', angle: 45 });
     // 头部向左侧 45 度
-    // rotateJoint("Neck", { axis: 'z', angle: 45 });
+    rotateJoint("Neck", { axis: 'z', angle: 45 });
     // 头部向左看 45 度
-    rotateJoint("Neck", { axis: '-y', angle: 45 });
+    // rotateJoint("Neck", { axis: '-y', angle: 45 });
   
     // 右手手臂整个放下（相比初始状态旋转80度左右）
     rotateJoint("RightArm", { axis: "z", angle: 80 });
@@ -47,18 +47,36 @@ export default function Model(props) {
     // rotateJoint("LeftLeg", { axis: "x", angle: 90 });
   }
 
-  // useFrame(() => {
-  //   // 设置眼睛 Mesh 的位置
-  //   const rightEyeRotation = new Quaternion();
-  //   nodes.mixamorigRightEye.getWorldQuaternion(rightEyeRotation);
-  //   rightEyeMeshRef.current.quaternion.copy(rightEyeRotation);
-  //   const rightEyePosition = new Vector3();
-  //   nodes.mixamorigRightEye.getWorldPosition(rightEyePosition);
-  //   rightEyeMeshRef.current.position.set(rightEyePosition.x, rightEyePosition.y, rightEyePosition.z+0.33);
-  //   const leftEyePosition = new Vector3();
-  //   nodes.mixamorigLeftEye.getWorldPosition(leftEyePosition);
-  //   leftEyeMeshRef.current.position.set(leftEyePosition.x, leftEyePosition.y, leftEyePosition.z+0.33);
-  // });
+  // 眼睛的补丁（理论上比较合适的方案，但是还是不行）
+  // useEffect(() => {
+  //   if (rightEyeMeshRef.current) {
+  //     const geometry = rightEyeMeshRef.current.geometry;
+ 
+  //     const skinIndices = []
+  //     const skinWeights = []
+
+  //     geometry.setAttribute( 'skinIndex', new Uint16BufferAttribute( skinIndices, 4 ) );
+  //     geometry.setAttribute( 'skinWeight', new Float32BufferAttribute( skinWeights, 4 ) );
+  //     geometry.attributes.skinIndex.needsUpdate = true;
+  //     geometry.attributes.skinWeight.needsUpdate = true;
+  //   }
+  // }, []);
+
+  useFrame(() => {
+    // 设置眼睛 Mesh 的位置（不优雅的临时方案）
+    const rightEyeRotation = new Quaternion();
+    nodes.mixamorigRightEye.getWorldQuaternion(rightEyeRotation);
+    rightEyeMeshRef.current.quaternion.copy(rightEyeRotation);
+    const rightEyePosition = new Vector3();
+    nodes.mixamorigRightEye.getWorldPosition(rightEyePosition);
+    rightEyeMeshRef.current.position.set(rightEyePosition.x, rightEyePosition.y, rightEyePosition.z+0.33);
+    const leftEyePosition = new Vector3();
+    nodes.mixamorigLeftEye.getWorldPosition(leftEyePosition);
+    leftEyeMeshRef.current.position.set(leftEyePosition.x, leftEyePosition.y, leftEyePosition.z+0.33);
+    const leftEyeRotation = new Quaternion();
+    nodes.mixamorigLeftEye.getWorldQuaternion(leftEyeRotation);
+    leftEyeMeshRef.current.quaternion.copy(leftEyeRotation);
+  });
 
   return (
     <group {...props} dispose={null}>
@@ -71,7 +89,7 @@ export default function Model(props) {
           skeleton={nodes.Beta_Surface.skeleton}
         >
           <meshPhysicalMaterial
-            color="0x9299A4"
+            color={0x9299A4}
             metalness={0.06}
             roughness={0.99}
             clearcoat={0.01}
@@ -85,14 +103,14 @@ export default function Model(props) {
           skeleton={nodes.Beta_Joints.skeleton}
         >
           <meshPhysicalMaterial
-            color="0x6B7F9E"
+            color={0x6B7F9E}
             metalness={0.8}
             roughness={0.65}
             clearcoat={0.66}
             clearcoatRoughness={0.36}
           />
         </skinnedMesh>
-              {/* 眼睛 */}
+      {/* 眼睛（理论上比较合适的方案，但是似乎这个 geometry 不行） */}
       {/* <skinnedMesh receiveShadow position={[0,0,0]} scale={[0.1*100,0.1*100,3*100]} ref={rightEyeMeshRef}>
         <skeleton bones={[nodes.mixamorigRightEye]} />
         <boxGeometry args={[0.2, 0.2, 0.2]} />
@@ -105,11 +123,8 @@ export default function Model(props) {
           />
       </skinnedMesh> */}
       </group>
-      <mesh onClick={handleBoxClick} position={[0.5,2,0]}>
-        <boxGeometry args={[0.1, 0.1, 0.01]}/>
-        <meshStandardMaterial /> 
-      </mesh>
-      {/* <skinnedMesh receiveShadow scale={[0.1,0.1,3]} ref={leftEyeMeshRef} >
+      {/* 眼睛（不优雅的临时方案） */}
+      <mesh receiveShadow scale={[0.1,0.1,3]} ref={rightEyeMeshRef} onClick={handleClick} >
         <boxGeometry args={[0.2, 0.2, 0.2]} />
         <meshPhysicalMaterial
             color={0x6B7F9E}
@@ -118,8 +133,17 @@ export default function Model(props) {
             clearcoat={0.66}
             clearcoatRoughness={0.36}
         />
-        <skeleton bones={[nodes.mixamorigLeftEye]} />
-      </skinnedMesh> */}
+      </mesh>
+      <mesh receiveShadow scale={[0.1,0.1,3]} ref={leftEyeMeshRef} >
+        <boxGeometry args={[0.2, 0.2, 0.2]} />
+        <meshPhysicalMaterial
+            color={0x6B7F9E}
+            metalness={0.8}
+            roughness={0.65}
+            clearcoat={0.66}
+            clearcoatRoughness={0.36}
+        />
+      </mesh>
     </group>
   );
 }

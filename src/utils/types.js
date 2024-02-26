@@ -1,5 +1,5 @@
 
-class ScriptDescription {
+export class ScriptDescription {
   constructor(variables, scriptFlow, executionMethod, speedGear, speedCurveType, frequency) {
     // 变量
     this.variables = variables;
@@ -17,7 +17,7 @@ class ScriptDescription {
 }
 
 // type 要点 = {部位, 目标姿态或动作}[]
-class KeyPoint {
+export class KeyPoint {
   constructor(part, targetPoseOrAction) {
     this.part = part;
     this.targetPoseOrAction = targetPoseOrAction;
@@ -49,14 +49,20 @@ const TargetPoseOrAction = {
   action: null,  // type 动作 = 绕关节旋转 | 移动
 };
 
-class Action {
+export class Pose {
+  constructor(poseName) {
+    this.poseName = poseName;
+  }
+}
+
+export class Action {
   constructor(type) {
     this.type = type;
   }
 }
 
 // 移动
-class Move extends Action {
+export class Move extends Action {
   constructor(direction, action, endPoint, startPoint, speedGear, speedCurve) {
     super("move");
     // 方向
@@ -75,7 +81,7 @@ class Move extends Action {
 }
 
 // 绕关节旋转 = {关节, 旋转幅度, 旋转方向}
-class RotateAroundJoint extends Action {
+export class RotateAroundJoint extends Action {
   constructor(joint, rotationAmplitude, rotationDirection) {
     super("rotate");
     // 关节
@@ -85,12 +91,4 @@ class RotateAroundJoint extends Action {
     // 旋转方向
     this.rotationDirection = rotationDirection;
   }
-}
-
-export function 获取旋转参数(joint, rotationAmplitude, rotationDirection) {
-  // 查表，根据关节和旋转方向确定 axis
-
-  // 查表，根据关节和旋转幅度确定 angle
-  
-  return {axis, angle};
 }

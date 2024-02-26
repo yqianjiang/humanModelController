@@ -3,6 +3,7 @@ import { useFrame } from "@react-three/fiber";
 import { computeLocalQuaternion } from "../utils/computeLocalQuaternion";
 import { calculateAngles } from "../utils/calculateAngles";
 import { Vector3, Quaternion } from "three";
+import Executor from "../utils/Executor";
 
 function getBoneNameFromJointName(name) {
   return `mixamorig${name}`;
@@ -11,6 +12,11 @@ function getBoneNameFromJointName(name) {
 export const useAction = ({ nodes }) => {
   const movingNodes = useRef([]);
   const targetQuaternions = useRef({});
+  const speed = useRef(0.05);
+  const executor = new Executor(executeAction, (newSpeed) => {
+    speed.current = newSpeed;
+  }
+    );
 
   /**
    * 旋转关节
@@ -66,6 +72,10 @@ export const useAction = ({ nodes }) => {
     );
   }
 
+  function executeActionScript(components, script) {
+    executor.executeActionScript(components, script);
+  }
+
   useFrame(() => {
     for (const target of movingNodes.current) {
       const currentRotation = target.quaternion.clone();
@@ -74,7 +84,7 @@ export const useAction = ({ nodes }) => {
         currentRotation.toArray().join(",") !==
         targetQuaternion.toArray().join(",")
       ) {
-        target.quaternion.slerp(targetQuaternion, 0.01);
+        target.quaternion.slerp(targetQuaternion, speed.current);
       } else {
         // 已经移动到指定参数，移除当前
         movingNodes.current = movingNodes.current.filter(
@@ -86,7 +96,7 @@ export const useAction = ({ nodes }) => {
   });
 
   return {
-    executeAction,
+    executeActionScript,
     rotateJoint,
   };
 };

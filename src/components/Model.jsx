@@ -3,6 +3,7 @@ import { useGLTF } from "@react-three/drei";
 import { useAction } from "../hooks/useAction";
 import { Vector3, Quaternion, Uint16BufferAttribute, Float32BufferAttribute } from "three";
 import { useFrame } from "@react-three/fiber";
+import { Pose, RotateAroundJoint } from "../utils/types";
 
 export default function Model(props) {
   const rightEyeMeshRef = useRef();
@@ -15,9 +16,85 @@ export default function Model(props) {
   });
 
   // const { ref } = useAnimations(animations);
-  const { rotateJoint } = useAction({ nodes });
+  const { rotateJoint, executeActionScript } = useAction({ nodes });
 
   const handleClick = () => {
+    executeActionScript(["左腿", "右腿"], {
+      variables: ["AA", "BB"],
+      scriptFlow: [
+        {
+          keyPoints: [
+            {
+              part: "AA",
+              targetPoseOrAction: new Pose(
+                "直",
+              ),
+            },
+            {
+              part: "BB",
+              targetPoseOrAction: new Pose(
+                "直",
+              ),
+            },
+            {
+              part: "AA",
+              targetPoseOrAction: new RotateAroundJoint(
+                "髋",
+                null,
+                "上"
+              ),
+            },
+            {
+              part: "BB",
+              targetPoseOrAction: new RotateAroundJoint(
+                "髋",
+                null,
+                "下"
+              ),
+            },
+          ],
+        },
+        {
+          keyPoints: [
+            {
+              part: "AA",
+              targetPoseOrAction: new Pose(
+                "直",
+              ),
+            },
+            {
+              part: "BB",
+              targetPoseOrAction: new Pose(
+                "直",
+              ),
+            },
+            {
+              part: "AA",
+              targetPoseOrAction: new RotateAroundJoint(
+                "髋",
+                null,
+                "下"
+              ),
+            },
+            {
+              part: "BB",
+              targetPoseOrAction: new RotateAroundJoint(
+                "髋",
+                null,
+                "上"
+              ),
+            },
+          ],
+        },
+      ],
+      executionMethod: "循环",
+      speedGear: "中速",
+      speedCurveType: "线性",
+      // frequency: 3,
+    });
+  }
+
+  const handleClick2 = () => {
     // 低头 45 度
     // rotateJoint("Neck", { axis: 'x', angle: 45 });
     // 头部向左侧 45 度

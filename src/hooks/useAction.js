@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { useRef, useEffect } from "react";
 import { useFrame } from "@react-three/fiber";
 import { computeLocalQuaternion } from "../utils/computeLocalQuaternion";
 import { calculateAngles } from "../utils/calculateAngles";
@@ -9,14 +9,13 @@ function getBoneNameFromJointName(name) {
   return `mixamorig${name}`;
 }
 
-export const useAction = ({ nodes }) => {
+export const useAction = ({ nodes, stop }) => {
   const movingNodes = useRef([]);
   const targetQuaternions = useRef({});
   const speed = useRef(0.05);
   const executor = new Executor(executeAction, (newSpeed) => {
     speed.current = newSpeed;
-  }
-    );
+  });
 
   /**
    * 旋转关节
@@ -76,7 +75,18 @@ export const useAction = ({ nodes }) => {
     executor.executeActionScript(components, script);
   }
 
+  useEffect(() => {
+    executor.stop = stop;
+    if (stop) {
+      movingNodes.current = [];
+      targetQuaternions.current = {};
+    }
+  }, [stop]);
+
   useFrame(() => {
+    if (stop) {
+      return;
+    }
     for (const target of movingNodes.current) {
       const currentRotation = target.quaternion.clone();
       const targetQuaternion = targetQuaternions.current[target.name];

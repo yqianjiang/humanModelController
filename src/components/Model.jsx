@@ -5,7 +5,7 @@ import { Vector3, Quaternion, Uint16BufferAttribute, Float32BufferAttribute } fr
 import { useFrame } from "@react-three/fiber";
 import { Pose, RotateAroundJoint } from "../utils/types";
 
-export default function Model(props) {
+export default function Model({input, stop, ...props}) {
   const rightEyeMeshRef = useRef();
   const leftEyeMeshRef = useRef();
   const { nodes, animations } =
@@ -16,9 +16,17 @@ export default function Model(props) {
   });
 
   // const { ref } = useAnimations(animations);
-  const { rotateJoint, executeActionScript } = useAction({ nodes });
+  const { rotateJoint, executeActionScript } = useAction({ nodes, stop });
 
-  const handleClick = () => {
+  useEffect(()=>{
+    if (input === "1") {
+      handleInput1();
+    } else if (input === "2") {
+      handleInput2();
+    }
+  }, [input])
+
+  const handleInput2 = () => {
     executeActionScript(["左腿", "右腿"], {
       variables: ["AA", "BB"],
       scriptFlow: [
@@ -94,7 +102,7 @@ export default function Model(props) {
     });
   }
 
-  const handleClick2 = () => {
+  const handleInput1 = () => {
     // 低头 45 度
     // rotateJoint("Neck", { axis: 'x', angle: 45 });
     // 头部向左侧 45 度
@@ -201,7 +209,7 @@ export default function Model(props) {
       </skinnedMesh> */}
       </group>
       {/* 眼睛（不优雅的临时方案） */}
-      <mesh receiveShadow scale={[0.1,0.1,3]} ref={rightEyeMeshRef} onClick={handleClick} >
+      <mesh receiveShadow scale={[0.1,0.1,3]} ref={rightEyeMeshRef} >
         <boxGeometry args={[0.2, 0.2, 0.2]} />
         <meshPhysicalMaterial
             color={0x6B7F9E}

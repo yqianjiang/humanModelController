@@ -1,10 +1,17 @@
 // App.jsx
-import React from "react";
+import React, {useState} from "react";
 import Scene from "./components/Scene";
-// import { useControls } from 'leva'
+import Controller from "./components/Controller";
 
 function App() {
-  return <Scene />;
+  const [input, setInput] = useState(null);
+  const [stop, setStop] = useState(true);
+
+  return <>
+    <Scene input={input} stop={stop} />
+    <Controller setInput={setInput} setStop={setStop} />
+  </>
+  ;
 }
 
 export default App;

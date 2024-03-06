@@ -1,6 +1,6 @@
-import {BodyComponent, Block, Joint, ComposedComponent, 从字符串获取部位实例} from "./BodyComponent";
-import {Pose, Action} from "./types";
-import {calculateAngles} from "./calculateAngles";
+import { BodyComponent, Block, Joint, ComposedComponent, 从字符串获取部位实例 } from "./BodyComponent";
+import { Pose, Action } from "./types";
+import { calculateAngles } from "./calculateAngles";
 
 function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
@@ -78,9 +78,9 @@ class Executor {
   async executeScript(script, variableMap) {
     for (const item of script.scriptFlow) {
       item.keyPoints.forEach((keypoint) => {
-        const {part, targetPoseOrAction} = keypoint;
+        const { part, targetPoseOrAction } = keypoint;
         const component = variableMap[part];
-        
+
         if (targetPoseOrAction) {
           this.executePoseOrAction(component, targetPoseOrAction);
         } else {
@@ -106,34 +106,34 @@ class Executor {
     if (component) {
       this.activeComponents = [从字符串获取部位实例(component)];
     }
-    
+
     this._executePoseOrAction(this.activeComponents[0], targetPoseOrAction);
   }
 
   _executePoseOrAction(component, targetPoseOrAction) {
     // Depending on the type of the current active component, call relevant methods
-    if(component instanceof Block){
+    if (component instanceof Block) {
       // 判断 targetPoseOrAction 是姿态还是动作
       if (targetPoseOrAction instanceof Pose) {
         this._executeBlockPose(component, targetPoseOrAction);
       } else if (targetPoseOrAction instanceof Action) {
         this._executeBlockAction(component, targetPoseOrAction);
       }
-    }else if(component instanceof Joint){
+    } else if (component instanceof Joint) {
       // 判断 targetPoseOrAction 是姿态还是动作
       if (targetPoseOrAction instanceof Pose) {
         this._executeJointPose(component, targetPoseOrAction);
       } else if (targetPoseOrAction instanceof Action) {
         this._executeJointAction(component, targetPoseOrAction);
       }
-    }else if(component instanceof ComposedComponent){
+    } else if (component instanceof ComposedComponent) {
       // 判断 targetPoseOrAction 是姿态还是动作
       if (targetPoseOrAction instanceof Pose) {
         this._executeComposedComponentPose(component, targetPoseOrAction);
       } else if (targetPoseOrAction instanceof Action) {
         this._executeComposedComponentAction(component, targetPoseOrAction);
       }
-    } else if(component instanceof BodyComponent){
+    } else if (component instanceof BodyComponent) {
       // 判断 targetPoseOrAction 是姿态还是动作
       if (targetPoseOrAction instanceof Pose) {
         this._executeGeneralPose(component, targetPoseOrAction);
@@ -147,13 +147,13 @@ class Executor {
     block.setPose(targetPose.poseName);
   }
 
-  _executeBlockAction(block, targetAction) { 
+  _executeBlockAction(block, targetAction) {
     console.log('executeBlockAction', block, targetAction);
-    const {type, joint, rotationAmplitude,rotationDirection} = targetAction;
+    const { type, joint, rotationAmplitude, rotationDirection } = targetAction;
     if (type === 'rotate') {
       // 旋转整个体块，涉及到多个关节
-      block.getRotationJoints().map(jointComponent => 
-      this._rotateJoint(jointComponent.name, jointComponent.获取旋转参数(joint, rotationAmplitude, rotationDirection)));
+      block.getRotationJoints().map(jointComponent =>
+        this._rotateJoint(jointComponent.name, jointComponent.获取旋转参数(joint, rotationAmplitude, rotationDirection)));
     } else if (type === 'move') {
       // Implement corresponding logic here because the targetAction structure for 'move' has not been specified
     }
@@ -172,7 +172,7 @@ class Executor {
    * type: "rotate" | "move",
    */
   _executeJointAction(jointComponent, targetAction) {
-    const {type, joint, rotationAmplitude,rotationDirection} = targetAction;
+    const { type, joint, rotationAmplitude, rotationDirection } = targetAction;
     if (type === 'rotate') {
       this._rotateJoint(jointComponent.name, jointComponent.获取旋转参数(joint, rotationAmplitude, rotationDirection));
     } else if (type === 'move') {
@@ -201,7 +201,7 @@ class Executor {
   }
 
   _executeGeneralAction(generalBodyComponent, targetAction) {
-      
+
   }
 }
 

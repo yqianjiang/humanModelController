@@ -4,9 +4,9 @@ import { OrbitControls } from "@react-three/drei";
 import Model from "./Model";
 import { Environment } from "./Environment";
 
-const Scene = ({input}) => (
+const Scene = ({ input }) => (
   <Canvas shadows camera={{ fov: 30, position: [-2, 2, 5] }}>
-    <color attach="background" args={[0xA1ADBE]} />
+    <color attach="background" args={[0xa1adbe]} />
 
     <group position={[0, 0, 0]}>
       <Suspense fallback={null}>

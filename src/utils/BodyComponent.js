@@ -75,15 +75,15 @@ export class Joint extends BodyComponent {
   获取旋转参数(joint, rotationAmplitude, rotationDirection) {
     // 查表，根据关节和旋转方向确定 axis 和 angle
     const axis = this.关节方向Map[joint][rotationDirection];
-  
+
     if (!axis) {
       console.error("未知的关节");
       return;
     }
-  
+
     const angle = this.关节幅度Map[joint][rotationAmplitude || "中"];
-    
-    return {axis, angle};
+
+    return { axis, angle };
   }
 }
 

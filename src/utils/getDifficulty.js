@@ -3,4 +3,4 @@
  * @param {*} joint
  * @param {*} angles [number, number, number] 分别表示 x, y, z 轴的旋转量
  */
-export function getDifficulty(joint, angles) {}
+export function getDifficulty(joint, angles) { }

@@ -1,4 +1,4 @@
-import React, { memo } from 'react'
+import React, { memo } from "react";
 
 export const Environment = memo(({ direction = [5, 5, 5] }) => (
   <>
@@ -17,4 +17,4 @@ export const Environment = memo(({ direction = [5, 5, 5] }) => (
       <shadowMaterial transparent opacity={0.2} />
     </mesh>
   </>
-))
+));

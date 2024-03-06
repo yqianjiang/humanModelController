@@ -29,10 +29,10 @@ const AXIS_MAP = {
  * @param {*} direction 希望朝向的方向
  * @param {*} angle 希望的旋转角度
  */
-export const calculateAngles = ({axis, angle}) => {
+export const calculateAngles = ({ axis, angle }) => {
   // 将角度转换为弧度
   const radians = angle * Math.PI / 180;
-  const {index, factor} = AXIS_MAP[axis];
+  const { index, factor } = AXIS_MAP[axis];
   if (!index && !factor) {
     console.log(direction);
     console.error('未知的方向');

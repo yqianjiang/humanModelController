@@ -34,7 +34,7 @@ class Selector {
     return "往入端选";
   }
 
-  selectPartsByReferenceAndSelector({reference, selector}) {
+  selectPartsByReferenceAndSelector({ reference, selector }) {
     // User defined function
   }
 
